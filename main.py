@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +20,8 @@ def process_images():
             )
 
             reduced = centers[labels.flatten()].reshape(img.shape).astype("uint8")
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            enhanced = cv2.equalizeHist(gray)
 
             cv2.imwrite(
                 os.path.join(
@@ -28,6 +29,9 @@ def process_images():
                     f"{os.path.splitext(file)[0]}_color_reduction.png"
                 ),
                 reduced
+                    f"{os.path.splitext(file)[0]}_contrast.png"
+                ),
+                enhanced
             )
 
 if __name__ == "__main__":
