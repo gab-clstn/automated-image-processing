@@ -44,6 +44,7 @@ def process_images():
                 enhanced
             )
 
+            # Filter 3: Image Sharpening
             sharpening_kernel = np.array([
                 [0, -1, 0],
                 [-1, 5, -1],
@@ -53,6 +54,15 @@ def process_images():
             cv2.imwrite(
                 os.path.join(OUTPUT_DIR, f"{name}_sharpened.png"),
                 sharpened
+            )
+
+            # Filter 4: Sobel Edge Detection
+            sobel_x = cv2.Sobel(sharpened, cv2.CV_64F, 1, 0, ksize=3)
+            sobel_y = cv2.Sobel(sharpened, cv2.CV_64F, 0, 1, ksize=3)
+            edges = cv2.convertScaleAbs(cv2.magnitude(sobel_x, sobel_y))
+            cv2.imwrite(
+                os.path.join(OUTPUT_DIR, f"{name}_edges.png"),
+                edges
             )
 
             print(f"Processed: {file}")
