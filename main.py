@@ -73,6 +73,25 @@ def process_images():
                 thick_edges
             )
 
+            # Combined Output of Filters
+            if len(thick_edges.shape) == 2:
+                thick_edges_bgr = cv2.cvtColor(thick_edges, cv2.COLOR_GRAY2BGR)
+            else:
+                thick_edges_bgr = thick_edges
+
+            final = cv2.addWeighted(
+                sharpened,      
+                0.9,
+                thick_edges_bgr,
+                0.1,
+                0
+            )
+
+            cv2.imwrite(
+                os.path.join(OUTPUT_DIR, f"{name}_combined.png"),
+                final
+            )
+
             print(f"Processed: {file}")
 
 if __name__ == "__main__":
