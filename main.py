@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import os
 
-# Resolve paths relative to this file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUT_DIR = os.path.join(BASE_DIR, "input")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
@@ -43,6 +42,17 @@ def process_images():
             cv2.imwrite(
                 os.path.join(OUTPUT_DIR, f"{name}_contrast.png"),
                 enhanced
+            )
+
+            sharpening_kernel = np.array([
+                [0, -1, 0],
+                [-1, 5, -1],
+                [0, -1, 0]
+            ])
+            sharpened = cv2.filter2D(reduced, -1, sharpening_kernel)
+            cv2.imwrite(
+                os.path.join(OUTPUT_DIR, f"{name}_sharpened.png"),
+                sharpened
             )
 
             print(f"Processed: {file}")
