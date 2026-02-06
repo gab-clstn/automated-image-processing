@@ -65,6 +65,14 @@ def process_images():
                 edges
             )
 
+            # Filter 5: Edge Thickening
+            kernel = np.ones((3, 3), np.uint8)
+            thick_edges = cv2.dilate(edges, kernel, iterations=1)
+            cv2.imwrite(
+                os.path.join(OUTPUT_DIR, f"{name}_edge_outline.png"),
+                thick_edges
+            )
+
             print(f"Processed: {file}")
 
 if __name__ == "__main__":
