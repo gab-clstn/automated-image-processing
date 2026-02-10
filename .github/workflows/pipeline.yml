@@ -16,7 +16,11 @@ jobs:
       contents: write 
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # This ensures the bot can push back to the actual branch
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -45,6 +49,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
-          # [skip ci] prevents the action from triggering itself in an infinite loop
           git commit -m "Auto-generated processed images [skip ci]" || echo "No changes to commit"
-          git push
+          # This push command is more robust for PRs
+          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
