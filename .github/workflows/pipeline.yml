@@ -1,23 +1,50 @@
 name: Image Processing Pipeline
-on: [push]
+
+# The pipeline now triggers on both direct pushes and pull requests to the main branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # Required to allow the GitHub Action to commit files back to the repo
+    permissions:
+      contents: write 
+
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          
       - name: Install dependencies
         run: pip install -r requirements.txt
+        
       - name: Run Processing
         run: python main.py
+        
       - name: Run Tests
         run: pytest
+        
+      # This step saves the images as a downloadable ZIP (as you currently have)
       - name: Archive Results
         uses: actions/upload-artifact@v4
         with:
           name: processed-images
           path: output/
+
+      # NEW STEP: This automatically pushes the results back to the output folder
+      - name: Commit and Push Results
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          # [skip ci] prevents the action from triggering itself in an infinite loop
+          git commit -m "Auto-generated processed images [skip ci]" || echo "No changes to commit"
+          git push
