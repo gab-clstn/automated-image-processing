@@ -1,6 +1,5 @@
 name: Image Processing Pipeline
 
-# The pipeline now triggers on both direct pushes and pull requests to the main branch
 on:
   push:
     branches: [ "main" ]
@@ -10,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    # Required to allow the GitHub Action to commit files back to the repo
     permissions:
       contents: write 
 
@@ -19,9 +16,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          # This ensures the bot can push back to the actual branch
+          # This fix ensures the bot knows which branch it's working on
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -36,19 +33,17 @@ jobs:
       - name: Run Tests
         run: pytest
         
-      # This step saves the images as a downloadable ZIP (as you currently have)
       - name: Archive Results
         uses: actions/upload-artifact@v4
         with:
           name: processed-images
           path: output/
 
-      # NEW STEP: This automatically pushes the results back to the output folder
       - name: Commit and Push Results
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
           git commit -m "Auto-generated processed images [skip ci]" || echo "No changes to commit"
-          # This push command is more robust for PRs
+          # This push command specifically targets the correct remote branch
           git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
