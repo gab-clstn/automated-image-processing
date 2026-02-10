@@ -16,8 +16,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          # Ensures the bot knows the actual branch name
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          # This ensures we get the actual branch and its full history
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0 
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -43,7 +44,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Force checkout the branch again to be absolutely sure we aren't detached
+          git checkout ${{ github.head_ref || github.ref_name }}
+          
           git add output/
+          # The [skip ci] prevents an infinite loop
           git commit -m "Auto-generated processed images [skip ci]" || echo "No changes to commit"
-          # This command specifically targets the remote branch name
-          git push origin HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}
+          git push origin ${{ github.head_ref || github.ref_name }}
