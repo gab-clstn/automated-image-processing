@@ -95,8 +95,6 @@ Applies the Sobel operator to detect edges by calculating gradients in horizonta
 ### 5. Edge Thickening
 Enhances detected edges by increasing their thickness, making them more prominent and easier to visualize.
 
-All processed images are automatically saved in the `output/` directory.
-
 ---
 
 ## Continuous Integration (CI) Pipeline
