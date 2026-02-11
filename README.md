@@ -8,15 +8,6 @@ It shows how image processing tasks can be integrated with CI practices to ensur
 
 ---
 
-## Project Objectives
-
-- Apply image processing techniques using Python and OpenCV  
-- Implement a Continuous Integration (CI) pipeline using GitHub Actions  
-- Practice collaborative software development using GitHub  
-- Understand DevOps workflow and automation concepts  
-
----
-
 ## How to Run the Program (Local Execution)
 
 Follow these steps to run the program on your local machine:
